@@ -5,12 +5,13 @@ public class FactoryProduct extends Object {
     }
 
     public static Product makeProduct(String type) throws UndefinedProductException {
-        if (type.equals("Computer")) {
-            return new Computer();
-        } else if (type.equals("Software")) {
-            return new Software();
-        } else {
-            throw new UndefinedProductException();
+        switch (type.toLowerCase()) {
+            case "computer":
+                return new Computer();
+            case "software":
+                return new Software();
+            default:
+                throw new UndefinedProductException();
         }
     }
 

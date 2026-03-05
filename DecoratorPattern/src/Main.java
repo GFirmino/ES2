@@ -1,7 +1,4 @@
-import com.es2.decorator.AuthInterface;
-import com.es2.decorator.Auth;
-import com.es2.decorator.Logging;
-import com.es2.decorator.CommonWordsValidator;
+import com.es2.decorator.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -14,7 +11,7 @@ public class Main {
             );
 
             auth.auth("admin", "admin");
-        }catch(Exception e){
+        }catch(AuthException e){
             System.out.println(e.getMessage());
         }
 

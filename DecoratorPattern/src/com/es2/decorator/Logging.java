@@ -7,12 +7,9 @@ public class Logging extends Decorator {
 
     @Override
     public void auth(String username, String password) throws AuthException {
-        try {
-            super.auth(username, password);
-            System.out.println("Logging: success " + username);
-        } catch (AuthException e) {
-            System.out.println("Logging: fail " + username);
-            throw e;
-        }
+        long timestamp = System.currentTimeMillis();
+        System.out.println("(" + timestamp + "),auth().");
+
+        super.auth(username, password);
     }
 }

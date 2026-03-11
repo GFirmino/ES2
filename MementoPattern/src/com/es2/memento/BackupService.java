@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class BackupService {
     private final ArrayList<Memento> mementoLst = new ArrayList<>();
+    private int maxSnapshots = 5;
     private Server server;
 
     public BackupService(Server server){
@@ -22,5 +23,22 @@ public class BackupService {
 
     public void takeSnapshot(){
         this.mementoLst.add(this.server.backup());
+
+        if (maxSnapshots > 0 && mementoLst.size() > maxSnapshots) {
+            mementoLst.remove(0);
+        }
+    }
+
+    public int getSnapshotCount() {
+        return mementoLst.size();
+    }
+
+    public int getMaxSnapshots() {
+        return maxSnapshots;
+    }
+
+    public void setMaxSnapshots(int maxSnapshots) {
+        if (maxSnapshots < 0) throw new IllegalArgumentException("maxSnapshots must be >= 0");
+        this.maxSnapshots = maxSnapshots;
     }
 }

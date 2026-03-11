@@ -4,8 +4,14 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Set;
 
 public class CommonWordsValidator extends Decorator {
+    private static final Set<String> COMMON = Set.of(
+            "admin123", "password", "password1", "123456", "12345678",
+            "qwerty", "qwerty123", "letmein", "welcome", "iloveyou", "111111"
+    );
+
     public CommonWordsValidator(AuthInterface auth){
         super(auth);
     }
@@ -16,10 +22,14 @@ public class CommonWordsValidator extends Decorator {
             throw new AuthException("Password inválida.");
         }
 
-        if (password.matches("[A-Za-z]+")) {
-            String response = getHTTPRequest(password.toLowerCase());
-            if (!response.isBlank()) {
-                throw new AuthException("Password demasiado comum (palavra de dicionário).");
+        if (COMMON.contains(password.toLowerCase())) {
+            throw new AuthException("Password demasiado comum.");
+        }
+
+        if (password.matches("[A-Za-z]")) {
+            String result = getHTTPRequest(password.toLowerCase());
+            if (!result.isBlank()) {
+                throw new AuthException("Password demasiado comum.");
             }
         }
 
@@ -29,7 +39,7 @@ public class CommonWordsValidator extends Decorator {
     public String getHTTPRequest(String word) throws AuthException {
         HttpURLConnection conn = null;
         try{
-            URL url = new URL("https://owlbot.info/api/v2/dictionary/" + word + "?format=json");
+            URL url = new URL( "https://api.dictionaryapi.dev/api/v2/entries/en/" + word);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestProperty("User-Agent", "Mozilla/5.0");
             conn.setRequestMethod("GET");

@@ -5,6 +5,7 @@ public class Main {
         try{
             Server s = new Server();
             BackupService backup = new BackupService(s);
+            backup.setMaxSnapshots(10);
 
             backup.takeSnapshot();
             s.addStudent("Maria José");

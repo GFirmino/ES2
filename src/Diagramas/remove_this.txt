@@ -1,0 +1,2 @@
+Este ficheiro apenas serve para criar a pasta onde estarão inseridos os diagramas relativos ao Epico 1.
+Após a inserção do primeiro diagrama, remover este ficheiro.

@@ -7,6 +7,6 @@ public class InfoLog extends LogMessage{
 
     @Override
     public String getLevel(){
-        return "INFO ";
+        return "INFO";
     }
 }

@@ -7,6 +7,6 @@ public class WarningLog extends LogMessage{
 
     @Override
     public String getLevel(){
-        return "WARN ";
+        return "WARN";
     }
 }

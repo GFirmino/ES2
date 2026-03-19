@@ -34,3 +34,4 @@ bin/
 .idea/
 *.MF
 META-INF/
+*.iml

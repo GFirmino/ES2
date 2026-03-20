@@ -1,20 +1,21 @@
 import es2.logs.singleton.LogConfig;
 import es2.logs.factory.*;
+import es2.logs.bridge.*;
 
 public class Main {
     public static void main(String[] args) {
         try{
             LogConfig config = LogConfig.getInstance();
+            LogMessage log1 = LogFactory.createLog("INFO", "Isto é um INFO debug na consola");
+            LogMessage log2 = LogFactory.createLog("ERROR", "Isto é um ERROR debug no ficheiro");
+            LogMessage log3 = LogFactory.createLog("ERROR", "Isto é outro ERROR debug no ficheiro");
 
-            LogMessage log1 = LogFactory.createLog("INFO", "Debugs do Sprint 1 modulos 1/2");
-            LogMessage log2 = LogFactory.createLog("ERROR", "Bug na matriz");
-            LogMessage log3 = LogFactory.createLog("DEBUG", "Isto é um debug normal");
-            LogMessage log4 = LogFactory.createLog("WARNING", "Se calhar os println podiam estar melhor...");
+            LoggerBridge logger = new LoggerBridge(new ConsoleDestination());
+            logger.log(log1);
 
-            System.out.println(log1.format());
-            System.out.println(log2.format());
-            System.out.println(log3.format());
-            System.out.println(log4.format());
+            logger.setDestination(new FileDestination());
+            logger.log(log2);
+            logger.log(log3);
         }catch(Exception e){
             e.printStackTrace();
         }

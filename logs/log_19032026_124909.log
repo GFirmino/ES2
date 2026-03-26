@@ -1,0 +1,9 @@
+Sistema
+   Autenticação
+      - [19-03-2026 12:49:09][INFO] Utilizador autenticado
+      - [19-03-2026 12:49:09][WARN] Password incorreta
+   Base de Dados
+      - [19-03-2026 12:49:09][DEBUG] Query executada com sucesso
+      - [19-03-2026 12:49:09][ERROR] Falha na ligação à Base de Dados
+   Interface
+      - [19-03-2026 12:49:09][INFO] Foi aberto o ecrã de detalhes

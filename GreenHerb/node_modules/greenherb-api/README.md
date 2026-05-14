@@ -1,6 +1,6 @@
 # GREENHERB API
 
-API REST em Node.js para a plataforma GREENHERB, uma aplicacao de gestao inteligente de estufa de ervas aromaticas. Esta versao implementa o Sprint 1 com Express, Jest, JWT e dados em memoria.
+API REST em Node.js para a plataforma GREENHERB, uma aplicacao de gestao inteligente de estufa de ervas aromaticas. Esta versao inclui o Sprint 1 com Express, Jest, JWT e dados em memoria, e o Sprint 2 com testes unitarios de importacao de ervas e planos de cultivo.
 
 ## Requisitos
 
@@ -65,6 +65,11 @@ Recursos:
 - `/reports`
 - `/audit`
 
+Endpoints adicionais do Sprint 2:
+
+- `POST /herbs/import`
+- `POST /plans` com validacao de planos REGULAR, EMERGENCIA e PONTUAL
+
 ## Autenticacao
 
 O login recebe `username` e `password`.
@@ -118,4 +123,38 @@ A matriz de rastreabilidade da autenticacao esta em:
 
 ```text
 docs/matriz-rastreabilidade-auth.md
+```
+
+## Sprint 2 — Testes unitários de importação e planos de cultivo
+
+O Sprint 2 acrescenta logica de dominio e testes unitarios para:
+
+- importacao do catalogo de ervas aromaticas a partir de CSV;
+- criacao e validacao de planos de cultivo dos tipos REGULAR, EMERGENCIA e PONTUAL.
+
+Os testes continuam a ser unitarios. Nao arrancam o servidor Express, nao usam Supertest e testam diretamente os services responsaveis pela logica de dominio.
+
+Tecnicas aplicadas:
+
+- particionamento de equivalencia para CSV valido, CSV vazio, cabecalho invalido, linhas validas, invalidas, duplicadas e vazias;
+- particionamento de equivalencia para tipos de plano validos, tipo invalido, campos obrigatorios e autorizacao do plano PONTUAL;
+- analise de valores limite para temperatura, humidade, luminosidade e duracao do ciclo;
+- cobertura MC/DC para a regra composta do plano PONTUAL.
+
+Para correr todos os testes:
+
+```bash
+npm test
+```
+
+Matriz de rastreabilidade do Sprint 2:
+
+```text
+docs/matriz-rastreabilidade-sprint2.md
+```
+
+Tabela MC/DC dos planos:
+
+```text
+docs/tabela-mcdc-planos.md
 ```

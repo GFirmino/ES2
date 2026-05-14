@@ -1,0 +1,13 @@
+{
+  "name": "greenherb",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Workspace do projeto GREENHERB.",
+  "workspaces": [
+    "greenherb-api"
+  ],
+  "scripts": {
+    "start": "npm start --workspace greenherb-api",
+    "test": "npm test --workspace greenherb-api"
+  }
+}

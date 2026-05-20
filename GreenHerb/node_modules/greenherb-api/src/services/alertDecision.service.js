@@ -45,10 +45,11 @@ function validateIgnoreJustification(justification) {
 }
 
 function decideAlert(alert, decisionInput) {
-  ensureAlertCanBeChanged(alert || {});
-
   const input = decisionInput || {};
   const decision = normalizeDecision(input.decision);
+
+  ensureAlertCanBeChanged(alert || {});
+
   const updatedAlert = {
     ...(alert || {}),
     status: decision

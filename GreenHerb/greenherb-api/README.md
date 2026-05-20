@@ -70,6 +70,14 @@ Endpoints adicionais do Sprint 2:
 - `POST /herbs/import`
 - `POST /plans` com validacao de planos REGULAR, EMERGENCIA e PONTUAL
 
+Endpoints adicionais usados no Sprint 4:
+
+- `GET /health`
+- `PATCH /batches/:id/state`
+- `GET /batches/:id/productivity`
+- `PATCH /alerts/:id`
+- `GET /reports?format=csv`
+
 ## Autenticacao
 
 O login recebe `username` e `password`.
@@ -201,4 +209,72 @@ Tabelas MC/DC do Sprint 3:
 ```text
 docs/tabela-mcdc-alertas.md
 docs/tabela-mcdc-automacao.md
+```
+
+## Sprint 4 - Testes de integracao dos endpoints
+
+O Sprint 4 adiciona testes de integracao para os endpoints REST da API GREENHERB. Os testes foram criados numa colecao Postman e a execucao automatica usa Newman.
+
+Os testes de integracao validam:
+
+- headers `Authorization`, `Content-Type` e `Accept`;
+- tokens JWT validos, ausentes e sem permissao;
+- JSON payloads validos e invalidos;
+- metodos HTTP validos e nao suportados;
+- codigos de resposta 2xx e 4xx;
+- estrutura das respostas JSON;
+- resposta CSV do endpoint de relatorios.
+
+Para correr a API:
+
+```bash
+npm start
+```
+
+Para correr os testes unitarios:
+
+```bash
+npm test
+```
+
+Para correr os testes de integracao, deixa a API a correr num terminal e executa noutro:
+
+```bash
+npm run test:integration
+```
+
+Tambem podes correr todos os testes, com a API ja ativa para a parte de integracao:
+
+```bash
+npm run test:all
+```
+
+Colecao Postman:
+
+```text
+postman/greenherb-sprint4.postman_collection.json
+```
+
+Ambiente Postman:
+
+```text
+postman/local.postman_environment.json
+```
+
+Relatorio Newman:
+
+```text
+reports/newman-sprint4-report.json
+```
+
+Matriz de rastreabilidade do Sprint 4:
+
+```text
+docs/matriz-rastreabilidade-sprint4.md
+```
+
+Relatorio auxiliar do Sprint 4:
+
+```text
+docs/relatorio-sprint4.md
 ```

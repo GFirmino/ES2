@@ -89,7 +89,7 @@ function authenticate(credentials) {
 function refreshToken(token) {
   if (typeof token !== "string" || token.trim().length === 0) {
     return {
-      status: 400,
+      status: 401,
       error: "Token e obrigatorio."
     };
   }

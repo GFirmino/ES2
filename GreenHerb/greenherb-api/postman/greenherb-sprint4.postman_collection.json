@@ -1,0 +1,588 @@
+{
+  "info": {
+    "name": "GREENHERB Sprint 4 - Integration Tests",
+    "_postman_id": "1a2f8dc2-f3bb-4f1b-8e5f-greenherb-sprint4",
+    "description": "Testes de integracao dos endpoints REST da API GREENHERB para o Sprint 4.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "TI-HEALTH-01 - GET /health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/health"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TI-HEALTH-01 status 200', function () { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.test('TI-HEALTH-01 body.status ok', function () { pm.expect(json.status).to.eql('ok'); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "TI-AUTH-01 - Login ADMIN",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{adminUsername}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TI-AUTH-01 status 200', function () { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.environment.set('adminToken', json.token);",
+                  "pm.test('TI-AUTH-01 token presente', function () { pm.expect(json.token).to.be.a('string').and.not.empty; });",
+                  "pm.test('TI-AUTH-01 user presente sem password', function () { pm.expect(json.user).to.be.an('object'); pm.expect(json.user.password).to.be.undefined; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TI-AUTH-02 - Login RESPONSAVEL",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{responsavelUsername}}\",\n  \"password\": \"{{responsavelPassword}}\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TI-AUTH-02 status 200', function () { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.environment.set('responsavelToken', json.token);",
+                  "pm.test('TI-AUTH-02 token presente', function () { pm.expect(json.token).to.be.a('string').and.not.empty; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TI-AUTH-03 - Login TECNICO",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{tecnicoUsername}}\",\n  \"password\": \"{{tecnicoPassword}}\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TI-AUTH-03 status 200', function () { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.environment.set('tecnicoToken', json.token);",
+                  "pm.test('TI-AUTH-03 token presente', function () { pm.expect(json.token).to.be.a('string').and.not.empty; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TI-AUTH-04 - Username inexistente",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"naoexiste\",\n  \"password\": \"{{adminPassword}}\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-AUTH-04 status 401', function () { pm.response.to.have.status(401); });", "pm.test('TI-AUTH-04 erro JSON', function () { pm.expect(pm.response.json().error).to.exist; });"] } }]
+        },
+        {
+          "name": "TI-AUTH-05 - Password errada",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{adminUsername}}\",\n  \"password\": \"Errada123!\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-AUTH-05 status 401', function () { pm.response.to.have.status(401); });", "pm.test('TI-AUTH-05 erro JSON', function () { pm.expect(pm.response.json().error).to.exist; });"] } }]
+        },
+        {
+          "name": "TI-AUTH-06 - Sem username",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"{{adminPassword}}\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-AUTH-06 status 400', function () { pm.response.to.have.status(400); });", "pm.test('TI-AUTH-06 erro JSON', function () { pm.expect(pm.response.json().error).to.exist; });"] } }]
+        },
+        {
+          "name": "TI-AUTH-07 - Payload sem application/json",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "text/plain" }],
+            "body": {
+              "mode": "raw",
+              "raw": "username=admin&password=Admin123!"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-AUTH-07 status 400', function () { pm.response.to.have.status(400); });", "pm.test('TI-AUTH-07 erro JSON', function () { pm.expect(pm.response.json().error).to.exist; });"] } }]
+        },
+        {
+          "name": "TI-AUTH-08 - Refresh token valido",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{adminToken}}\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/refresh"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-AUTH-08 status 200', function () { pm.response.to.have.status(200); });", "const json = pm.response.json();", "pm.test('TI-AUTH-08 token renovado presente', function () { pm.expect(json.token).to.be.a('string').and.not.empty; });"] } }]
+        },
+        {
+          "name": "TI-AUTH-09 - Refresh sem token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": "{{baseUrl}}/auth/refresh"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-AUTH-09 status 401', function () { pm.response.to.have.status(401); });", "pm.test('TI-AUTH-09 erro JSON', function () { pm.expect(pm.response.json().error).to.exist; });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "TI-USERS-01 - Criar user ADMIN",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"integration_user_sprint4_{{$timestamp}}\",\n  \"password\": \"Integration123!\",\n  \"role\": \"TECNICO\"\n}"
+            },
+            "url": "{{baseUrl}}/users"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-USERS-01 status 201', function () { pm.response.to.have.status(201); });", "const json = pm.response.json();", "pm.environment.set('createdUserId', json.data.id);", "pm.test('TI-USERS-01 user sem password', function () { pm.expect(json.data.id).to.exist; pm.expect(json.data.password).to.be.undefined; });"] } }]
+        },
+        {
+          "name": "TI-USERS-02 - Criar user sem token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"sem_token\",\n  \"password\": \"Integration123!\",\n  \"role\": \"TECNICO\"\n}" },
+            "url": "{{baseUrl}}/users"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-USERS-02 status 401', function () { pm.response.to.have.status(401); });"] } }]
+        },
+        {
+          "name": "TI-USERS-03 - Criar user com TECNICO",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{tecnicoToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"tecnico_sem_permissao\",\n  \"password\": \"Integration123!\",\n  \"role\": \"TECNICO\"\n}" },
+            "url": "{{baseUrl}}/users"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-USERS-03 status 403', function () { pm.response.to.have.status(403); });"] } }]
+        },
+        {
+          "name": "TI-USERS-04 - Role invalida",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"role_invalida_{{$timestamp}}\",\n  \"password\": \"Integration123!\",\n  \"role\": \"GESTOR\"\n}" },
+            "url": "{{baseUrl}}/users"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-USERS-04 status 400', function () { pm.response.to.have.status(400); });"] } }]
+        },
+        {
+          "name": "TI-USERS-05 - Listar users ADMIN",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/users"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-USERS-05 status 200', function () { pm.response.to.have.status(200); });", "pm.test('TI-USERS-05 data array', function () { pm.expect(pm.response.json().data).to.be.an('array'); });"] } }]
+        },
+        {
+          "name": "TI-USERS-06 - Obter user criado",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/users/{{createdUserId}}"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-USERS-06 status 200', function () { pm.response.to.have.status(200); });", "const json = pm.response.json();", "pm.test('TI-USERS-06 id corresponde', function () { pm.expect(String(json.data.id)).to.eql(String(pm.environment.get('createdUserId'))); });"] } }]
+        },
+        {
+          "name": "TI-USERS-07 - Atualizar user criado",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"integration_user_sprint4_updated_{{$timestamp}}\",\n  \"role\": \"RESPONSAVEL\"\n}" },
+            "url": "{{baseUrl}}/users/{{createdUserId}}"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-USERS-07 status 200', function () { pm.response.to.have.status(200); });", "pm.test('TI-USERS-07 password ausente', function () { pm.expect(pm.response.json().data.password).to.be.undefined; });"] } }]
+        },
+        {
+          "name": "TI-USERS-08 - Apagar user criado",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/users/{{createdUserId}}"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-USERS-08 status 204', function () { pm.response.to.have.status(204); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "Herbs",
+      "item": [
+        {
+          "name": "TI-HERBS-01 - Criar erva",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"commonName\": \"Basilicao Sprint 4 {{$timestamp}}\",\n  \"scientificName\": \"Ocimum sprint4 {{$timestamp}}\",\n  \"idealTemperatureMin\": 18,\n  \"idealTemperatureMax\": 28,\n  \"idealHumidityMin\": 40,\n  \"idealHumidityMax\": 80,\n  \"idealLuminosityMin\": 5000,\n  \"idealLuminosityMax\": 25000,\n  \"cycleDurationDays\": 90\n}" },
+            "url": "{{baseUrl}}/herbs"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-HERBS-01 status 201', function () { pm.response.to.have.status(201); });", "const json = pm.response.json();", "pm.environment.set('createdHerbId', json.data.id);", "pm.test('TI-HERBS-01 id presente', function () { pm.expect(json.data.id).to.exist; });"] } }]
+        },
+        {
+          "name": "TI-HERBS-02 - Criar erva sem token",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"commonName\": \"Sem token\",\n  \"scientificName\": \"Sem token\"\n}" }, "url": "{{baseUrl}}/herbs" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-HERBS-02 status 401', function () { pm.response.to.have.status(401); });"] } }]
+        },
+        {
+          "name": "TI-HERBS-03 - Criar erva payload invalido",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"commonName\": \"\",\n  \"scientificName\": \"Invalidus\"\n}" }, "url": "{{baseUrl}}/herbs" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-HERBS-03 status 400', function () { pm.response.to.have.status(400); });"] } }]
+        },
+        {
+          "name": "TI-HERBS-04 - Listar herbs",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/herbs" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-HERBS-04 status 200', function () { pm.response.to.have.status(200); });", "pm.test('TI-HERBS-04 data array', function () { pm.expect(pm.response.json().data).to.be.an('array'); });"] } }]
+        },
+        {
+          "name": "TI-HERBS-05 - Obter herb criada",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/herbs/{{createdHerbId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-HERBS-05 status 200', function () { pm.response.to.have.status(200); });", "pm.test('TI-HERBS-05 id corresponde', function () { pm.expect(String(pm.response.json().data.id)).to.eql(String(pm.environment.get('createdHerbId'))); });"] } }]
+        },
+        {
+          "name": "TI-HERBS-06 - Importar CSV valido",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"csvContent\": \"commonName,scientificName,idealTemperatureMin,idealTemperatureMax,idealHumidityMin,idealHumidityMax,idealLuminosityMin,idealLuminosityMax,cycleDurationDays\\nAlecrim Sprint4 {{$timestamp}},Rosmarinus sprint4 {{$timestamp}},18,28,40,80,5000,25000,120\"\n}" }, "url": "{{baseUrl}}/herbs/import" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-HERBS-06 status 201', function () { pm.response.to.have.status(201); });", "const json = pm.response.json();", "pm.test('TI-HERBS-06 importedRows >= 1', function () { pm.expect(json.summary.importedRows).to.be.at.least(1); });"] } }]
+        },
+        {
+          "name": "TI-HERBS-07 - Importar CSV vazio",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"csvContent\": \"\"\n}" }, "url": "{{baseUrl}}/herbs/import" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-HERBS-07 status 400', function () { pm.response.to.have.status(400); });"] } }]
+        },
+        {
+          "name": "TI-HERBS-08 - Importar CSV cabecalho invalido",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"csvContent\": \"name,scientific\\nAlecrim,Rosmarinus\"\n}" }, "url": "{{baseUrl}}/herbs/import" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-HERBS-08 status 400', function () { pm.response.to.have.status(400); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "Plans",
+      "item": [
+        {
+          "name": "TI-PLANS-01 - Criar plano REGULAR",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"type\": \"REGULAR\",\n  \"herbId\": {{createdHerbId}},\n  \"temperature\": 23,\n  \"humidity\": 60,\n  \"luminosity\": 15000,\n  \"cycleDurationDays\": 90\n}" }, "url": "{{baseUrl}}/plans" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-PLANS-01 status 201', function () { pm.response.to.have.status(201); });", "const json = pm.response.json();", "pm.environment.set('createdPlanId', json.data.id);", "pm.test('TI-PLANS-01 type REGULAR', function () { pm.expect(json.data.type).to.eql('REGULAR'); });"] } }]
+        },
+        {
+          "name": "TI-PLANS-02 - Tipo invalido",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"type\": \"SEMANAL\",\n  \"herbId\": {{createdHerbId}},\n  \"temperature\": 23,\n  \"humidity\": 60,\n  \"luminosity\": 15000,\n  \"cycleDurationDays\": 90\n}" }, "url": "{{baseUrl}}/plans" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-PLANS-02 status 400', function () { pm.response.to.have.status(400); });"] } }]
+        },
+        {
+          "name": "TI-PLANS-03 - Temperature abaixo limite",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"type\": \"REGULAR\",\n  \"herbId\": {{createdHerbId}},\n  \"temperature\": 17,\n  \"humidity\": 60,\n  \"luminosity\": 15000,\n  \"cycleDurationDays\": 90\n}" }, "url": "{{baseUrl}}/plans" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-PLANS-03 status 400', function () { pm.response.to.have.status(400); });"] } }]
+        },
+        {
+          "name": "TI-PLANS-04 - Temperature limite inferior",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"type\": \"REGULAR\",\n  \"herbId\": {{createdHerbId}},\n  \"temperature\": 18,\n  \"humidity\": 60,\n  \"luminosity\": 15000,\n  \"cycleDurationDays\": 90\n}" }, "url": "{{baseUrl}}/plans" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-PLANS-04 status 201', function () { pm.response.to.have.status(201); });"] } }]
+        },
+        {
+          "name": "TI-PLANS-05 - PONTUAL sem autorizacao",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"type\": \"PONTUAL\",\n  \"herbId\": {{createdHerbId}},\n  \"temperature\": 23,\n  \"humidity\": 60,\n  \"luminosity\": 15000,\n  \"cycleDurationDays\": 30\n}" }, "url": "{{baseUrl}}/plans" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-PLANS-05 status 403', function () { pm.response.to.have.status(403); });"] } }]
+        },
+        {
+          "name": "TI-PLANS-06 - PONTUAL com autorizacao",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"type\": \"PONTUAL\",\n  \"herbId\": {{createdHerbId}},\n  \"temperature\": 23,\n  \"humidity\": 60,\n  \"luminosity\": 15000,\n  \"cycleDurationDays\": 30,\n  \"hasResponsibleAuthorization\": true,\n  \"authorizedByRole\": \"RESPONSAVEL\"\n}" }, "url": "{{baseUrl}}/plans" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-PLANS-06 status 201', function () { pm.response.to.have.status(201); });", "pm.test('TI-PLANS-06 type PONTUAL', function () { pm.expect(pm.response.json().data.type).to.eql('PONTUAL'); });"] } }]
+        },
+        {
+          "name": "TI-PLANS-07 - Listar plans",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/plans" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-PLANS-07 status 200', function () { pm.response.to.have.status(200); });", "pm.test('TI-PLANS-07 data array', function () { pm.expect(pm.response.json().data).to.be.an('array'); });"] } }]
+        },
+        {
+          "name": "TI-PLANS-08 - Obter plan criado",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/plans/{{createdPlanId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-PLANS-08 status 200', function () { pm.response.to.have.status(200); });", "pm.test('TI-PLANS-08 id corresponde', function () { pm.expect(String(pm.response.json().data.id)).to.eql(String(pm.environment.get('createdPlanId'))); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "Batches",
+      "item": [
+        {
+          "name": "TI-BATCH-01 - Criar lote",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"herbId\": {{createdHerbId}},\n  \"planId\": {{createdPlanId}},\n  \"state\": \"ATIVO\",\n  \"expectedUnits\": 100\n}" }, "url": "{{baseUrl}}/batches" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-BATCH-01 status 201', function () { pm.response.to.have.status(201); });", "const json = pm.response.json();", "pm.environment.set('createdBatchId', json.data.id);", "pm.test('TI-BATCH-01 state ATIVO', function () { pm.expect(json.data.state).to.eql('ATIVO'); });"] } }]
+        },
+        {
+          "name": "TI-BATCH-02 - PlanId invalido",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"herbId\": {{createdHerbId}},\n  \"planId\": 999999,\n  \"state\": \"ATIVO\",\n  \"expectedUnits\": 100\n}" }, "url": "{{baseUrl}}/batches" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-BATCH-02 status 400', function () { pm.response.to.have.status(400); });"] } }]
+        },
+        {
+          "name": "TI-BATCH-03 - Obter lote",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/batches/{{createdBatchId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-BATCH-03 status 200', function () { pm.response.to.have.status(200); });"] } }]
+        },
+        {
+          "name": "TI-BATCH-04 - CONCLUIDO sem actualEndDate",
+          "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"state\": \"CONCLUIDO\"\n}" }, "url": "{{baseUrl}}/batches/{{createdBatchId}}/state" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-BATCH-04 status 400', function () { pm.response.to.have.status(400); });"] } }]
+        },
+        {
+          "name": "TI-BATCH-05 - COMPROMETIDO com perdas",
+          "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"state\": \"COMPROMETIDO\",\n  \"lostUnits\": 5\n}" }, "url": "{{baseUrl}}/batches/{{createdBatchId}}/state" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-BATCH-05 status 200', function () { pm.response.to.have.status(200); });", "pm.test('TI-BATCH-05 state COMPROMETIDO', function () { pm.expect(pm.response.json().data.state).to.eql('COMPROMETIDO'); });"] } }]
+        },
+        {
+          "name": "TI-BATCH-06 - CONCLUIR e calcular produtividade",
+          "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"state\": \"CONCLUIDO\",\n  \"actualEndDate\": \"2026-01-01T10:00:00.000Z\",\n  \"harvestedUnits\": 80,\n  \"lostUnits\": 5,\n  \"dividedUnits\": 20\n}" }, "url": "{{baseUrl}}/batches/{{createdBatchId}}/state" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-BATCH-06 status 200', function () { pm.response.to.have.status(200); });", "const json = pm.response.json();", "pm.test('TI-BATCH-06 produtividade presente', function () { pm.expect(json.productivity.productivityPercentage).to.eql(95); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "TI-TASKS-01 - Criar task",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{tecnicoToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"type\": \"REGA\",\n  \"batchId\": {{createdBatchId}},\n  \"assignedTo\": 1,\n  \"scheduledAt\": \"2026-01-01T10:00:00.000Z\",\n  \"status\": \"PENDENTE\"\n}" }, "url": "{{baseUrl}}/tasks" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-TASKS-01 status 201', function () { pm.response.to.have.status(201); });", "const json = pm.response.json();", "pm.environment.set('createdTaskId', json.data.id);", "pm.test('TI-TASKS-01 status PENDENTE', function () { pm.expect(json.data.status).to.eql('PENDENTE'); });"] } }]
+        },
+        {
+          "name": "TI-TASKS-02 - Type invalido",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{tecnicoToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"type\": \"LIMPEZA\",\n  \"batchId\": {{createdBatchId}},\n  \"assignedTo\": 1,\n  \"scheduledAt\": \"2026-01-01T10:00:00.000Z\",\n  \"status\": \"PENDENTE\"\n}" }, "url": "{{baseUrl}}/tasks" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-TASKS-02 status 400', function () { pm.response.to.have.status(400); });"] } }]
+        },
+        {
+          "name": "TI-TASKS-03 - Criar task sem token",
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"type\": \"REGA\",\n  \"batchId\": {{createdBatchId}},\n  \"assignedTo\": 1,\n  \"scheduledAt\": \"2026-01-01T10:00:00.000Z\",\n  \"status\": \"PENDENTE\"\n}" }, "url": "{{baseUrl}}/tasks" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-TASKS-03 status 401', function () { pm.response.to.have.status(401); });"] } }]
+        },
+        {
+          "name": "TI-TASKS-04 - Listar tasks",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/tasks" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-TASKS-04 status 200', function () { pm.response.to.have.status(200); });"] } }]
+        },
+        {
+          "name": "TI-TASKS-05 - Atualizar task CONCLUIDA",
+          "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{tecnicoToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"CONCLUIDA\"\n}" }, "url": "{{baseUrl}}/tasks/{{createdTaskId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-TASKS-05 status 200', function () { pm.response.to.have.status(200); });", "pm.test('TI-TASKS-05 status CONCLUIDA', function () { pm.expect(pm.response.json().data.status).to.eql('CONCLUIDA'); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "Measurements and Alerts",
+      "item": [
+        {
+          "name": "TI-MEAS-01 - Medicao valida dentro limites",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{tecnicoToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"batchId\": {{createdBatchId}},\n  \"temperature\": 23,\n  \"humidity\": 60,\n  \"luminosity\": 15000,\n  \"measuredAt\": \"2026-01-01T10:00:00.000Z\",\n  \"sensorOK\": true\n}" }, "url": "{{baseUrl}}/measurements" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-MEAS-01 status 201', function () { pm.response.to.have.status(201); });", "const json = pm.response.json();", "pm.environment.set('createdMeasurementId', json.data.id);", "pm.test('TI-MEAS-01 sem alerta critico', function () { pm.expect(json.alert === null || json.alert.classification !== 'CRITICO').to.eql(true); });"] } }]
+        },
+        {
+          "name": "TI-MEAS-02 - Medicao gera alerta",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{tecnicoToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"batchId\": {{createdBatchId}},\n  \"temperature\": 23,\n  \"humidity\": 39,\n  \"luminosity\": 15000,\n  \"measuredAt\": \"2026-01-01T11:00:00.000Z\",\n  \"sensorOK\": true\n}" }, "url": "{{baseUrl}}/measurements" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-MEAS-02 status 201', function () { pm.response.to.have.status(201); });", "const json = pm.response.json();", "pm.environment.set('createdAlertId', json.alert.id);", "pm.test('TI-MEAS-02 alerta gerado', function () { pm.expect(json.alert.id).to.exist; pm.expect(json.alert.classification).to.eql('INFORMATIVO'); });"] } }]
+        },
+        {
+          "name": "TI-MEAS-03 - Medicao invalida",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{tecnicoToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"batchId\": {{createdBatchId}},\n  \"temperature\": 23,\n  \"humidity\": 60,\n  \"luminosity\": 15000,\n  \"measuredAt\": \"2026-01-01T10:00:00.000Z\",\n  \"sensorOK\": \"true\"\n}" }, "url": "{{baseUrl}}/measurements" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-MEAS-03 status 400', function () { pm.response.to.have.status(400); });"] } }]
+        },
+        {
+          "name": "TI-ALERTS-01 - Listar alerts",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }], "url": "{{baseUrl}}/alerts" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-ALERTS-01 status 200', function () { pm.response.to.have.status(200); });", "pm.test('TI-ALERTS-01 lista alertas', function () { pm.expect(pm.response.json().data).to.be.an('array'); });"] } }]
+        },
+        {
+          "name": "TI-ALERTS-02 - Ignorar sem justificacao",
+          "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"decision\": \"IGNORADO\"\n}" }, "url": "{{baseUrl}}/alerts/{{createdAlertId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-ALERTS-02 status 422', function () { pm.response.to.have.status(422); });"] } }]
+        },
+        {
+          "name": "TI-ALERTS-03 - Ignorar com justificacao",
+          "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"decision\": \"IGNORADO\",\n  \"justification\": \"Justificacao valida para ignorar este alerta.\"\n}" }, "url": "{{baseUrl}}/alerts/{{createdAlertId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-ALERTS-03 status 200', function () { pm.response.to.have.status(200); });", "pm.test('TI-ALERTS-03 status IGNORADO', function () { pm.expect(pm.response.json().data.status).to.eql('IGNORADO'); });"] } }]
+        },
+        {
+          "name": "TI-ALERTS-04 - Decisao invalida",
+          "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"decision\": \"ADIADO\"\n}" }, "url": "{{baseUrl}}/alerts/{{createdAlertId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-ALERTS-04 status 400', function () { pm.response.to.have.status(400); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "Automation",
+      "item": [
+        {
+          "name": "TI-AUTO-01 - MANUAL sugere acao",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"mode\": \"MANUAL\",\n  \"ruleActive\": true,\n  \"measurementRecent\": true,\n  \"breachDetected\": true,\n  \"suggestedAction\": \"REGAR\"\n}" }, "url": "{{baseUrl}}/automation" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-AUTO-01 status 201', function () { pm.response.to.have.status(201); });", "const json = pm.response.json();", "pm.environment.set('createdAutomationRuleId', json.data.id);", "pm.test('TI-AUTO-01 decision SUGGEST_ACTION', function () { pm.expect(json.decision).to.eql('SUGGEST_ACTION'); });"] } }]
+        },
+        {
+          "name": "TI-AUTO-02 - AUTOMATICO executa acao",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"mode\": \"AUTOMATICO\",\n  \"ruleActive\": true,\n  \"measurementRecent\": true,\n  \"breachDetected\": true,\n  \"suggestedAction\": \"REGAR\"\n}" }, "url": "{{baseUrl}}/automation" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-AUTO-02 status 201', function () { pm.response.to.have.status(201); });", "pm.test('TI-AUTO-02 decision EXECUTE_ACTION', function () { pm.expect(pm.response.json().decision).to.eql('EXECUTE_ACTION'); });"] } }]
+        },
+        {
+          "name": "TI-AUTO-03 - Regra inativa",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"mode\": \"AUTOMATICO\",\n  \"ruleActive\": false,\n  \"measurementRecent\": true,\n  \"breachDetected\": true,\n  \"suggestedAction\": \"REGAR\"\n}" }, "url": "{{baseUrl}}/automation" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-AUTO-03 status 201', function () { pm.response.to.have.status(201); });", "pm.test('TI-AUTO-03 decision NO_ACTION', function () { pm.expect(pm.response.json().decision).to.eql('NO_ACTION'); });"] } }]
+        },
+        {
+          "name": "TI-AUTO-04 - Modo invalido",
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{responsavelToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"mode\": \"AUTO\",\n  \"ruleActive\": true,\n  \"measurementRecent\": true,\n  \"breachDetected\": true,\n  \"suggestedAction\": \"REGAR\"\n}" }, "url": "{{baseUrl}}/automation" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-AUTO-04 status 400', function () { pm.response.to.have.status(400); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "TI-REPORTS-01 - CSV report",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }, { "key": "Accept", "value": "text/csv" }], "url": "{{baseUrl}}/reports?format=csv" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-REPORTS-01 status 200', function () { pm.response.to.have.status(200); });", "pm.test('TI-REPORTS-01 content-type csv', function () { pm.expect(pm.response.headers.get('Content-Type')).to.include('text/csv'); });", "pm.test('TI-REPORTS-01 body contem cabecalho', function () { pm.expect(pm.response.text()).to.include('id,herbId,planId'); });"] } }]
+        },
+        {
+          "name": "TI-REPORTS-02 - Formato invalido",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }], "url": "{{baseUrl}}/reports?format=json" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-REPORTS-02 status 400', function () { pm.response.to.have.status(400); });"] } }]
+        },
+        {
+          "name": "TI-REPORTS-03 - Reports sem token",
+          "request": { "method": "GET", "header": [{ "key": "Accept", "value": "text/csv" }], "url": "{{baseUrl}}/reports?format=csv" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-REPORTS-03 status 401', function () { pm.response.to.have.status(401); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "Audit",
+      "item": [
+        {
+          "name": "TI-AUDIT-01 - Listar audit ADMIN",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }], "url": "{{baseUrl}}/audit" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-AUDIT-01 status 200', function () { pm.response.to.have.status(200); });", "const json = pm.response.json();", "pm.test('TI-AUDIT-01 lista logs', function () { pm.expect(json.data).to.be.an('array'); });", "pm.test('TI-AUDIT-01 log relevante contem campos', function () { const log = json.data.find(item => item.userId && item.action && item.timestamp); pm.expect(log).to.exist; });"] } }]
+        },
+        {
+          "name": "TI-AUDIT-02 - Audit sem token",
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/audit" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-AUDIT-02 status 401', function () { pm.response.to.have.status(401); });"] } }]
+        },
+        {
+          "name": "TI-AUDIT-03 - Audit com TECNICO",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{tecnicoToken}}" }], "url": "{{baseUrl}}/audit" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-AUDIT-03 status 403', function () { pm.response.to.have.status(403); });"] } }]
+        },
+        {
+          "name": "TI-AUDIT-04 - Audit contem operacao de escrita",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }], "url": "{{baseUrl}}/audit" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-AUDIT-04 status 200', function () { pm.response.to.have.status(200); });", "const json = pm.response.json();", "pm.test('TI-AUDIT-04 contem CREATE_HERB ou CREATE_PLAN', function () { const found = json.data.some(item => ['CREATE_HERB', 'CREATE_PLAN', 'CREATE_BATCH', 'CREATE_TASK'].includes(item.action)); pm.expect(found).to.eql(true); });"] } }]
+        }
+      ]
+    },
+    {
+      "name": "HTTP Methods",
+      "item": [
+        {
+          "name": "TI-METHOD-01 - DELETE /auth/login",
+          "request": { "method": "DELETE", "header": [], "url": "{{baseUrl}}/auth/login" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-METHOD-01 status 404', function () { pm.response.to.have.status(404); });", "pm.test('TI-METHOD-01 erro JSON', function () { pm.expect(pm.response.json().error).to.exist; });"] } }]
+        },
+        {
+          "name": "TI-METHOD-02 - PATCH /herbs sem id",
+          "request": { "method": "PATCH", "header": [], "url": "{{baseUrl}}/herbs" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-METHOD-02 status 404', function () { pm.response.to.have.status(404); });", "pm.test('TI-METHOD-02 erro JSON', function () { pm.expect(pm.response.json().error).to.exist; });"] } }]
+        },
+        {
+          "name": "TI-METHOD-03 - POST endpoint inexistente",
+          "request": { "method": "POST", "header": [], "url": "{{baseUrl}}/unknown-resource" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('TI-METHOD-03 status 404', function () { pm.response.to.have.status(404); });", "pm.test('TI-METHOD-03 erro JSON', function () { pm.expect(pm.response.json().error).to.exist; });"] } }]
+        }
+      ]
+    }
+  ]
+}

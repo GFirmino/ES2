@@ -1,6 +1,6 @@
 # GREENHERB API
 
-API REST em Node.js para a plataforma GREENHERB, uma aplicacao de gestao inteligente de estufa de ervas aromaticas. Esta versao inclui o Sprint 1 com Express, Jest, JWT e dados em memoria, e o Sprint 2 com testes unitarios de importacao de ervas e planos de cultivo.
+API REST em Node.js para a plataforma GREENHERB, uma aplicacao de gestao inteligente de estufa de ervas aromaticas. Esta versao inclui o Sprint 1 com Express, Jest, JWT e dados em memoria, o Sprint 2 com testes unitarios de importacao de ervas e planos de cultivo, e o Sprint 3 com testes unitarios dos restantes requisitos de dominio.
 
 ## Requisitos
 
@@ -157,4 +157,48 @@ Tabela MC/DC dos planos:
 
 ```text
 docs/tabela-mcdc-planos.md
+```
+
+## Sprint 3 - Testes unitarios dos requisitos restantes
+
+O Sprint 3 acrescenta services e testes unitarios para os restantes requisitos de dominio do GREENHERB:
+
+- validacao de medicoes ambientais;
+- geracao e classificacao de alertas;
+- resolucao e ignorar alertas com justificacao obrigatoria;
+- transicoes de estado de lotes;
+- registo de perdas, divisao de lotes e calculo de produtividade;
+- motor de automacao em modo MANUAL e AUTOMATICO;
+- validacao de tarefas operacionais;
+- controlo de acesso por perfil de utilizador;
+- auditoria de operacoes relevantes;
+- exportacao simples de relatorios em CSV.
+
+Os testes do Sprint 3 sao unitarios e isolados. Nao usam Supertest, nao arrancam o servidor Express e chamam diretamente services testaveis.
+
+Tecnicas aplicadas:
+
+- particionamento de equivalencia para entradas validas, invalidas, ausentes e perfis de utilizador;
+- analise de valores limite para humidade de medicoes e justificacao de alertas ignorados;
+- cobertura de condicoes multiplas nas regras de lotes comprometidos;
+- cobertura MC/DC para a decisao composta de alertas;
+- cobertura MC/DC para a decisao composta de automacao.
+
+Para correr todos os testes:
+
+```bash
+npm test
+```
+
+Matriz de rastreabilidade do Sprint 3:
+
+```text
+docs/matriz-rastreabilidade-sprint3.md
+```
+
+Tabelas MC/DC do Sprint 3:
+
+```text
+docs/tabela-mcdc-alertas.md
+docs/tabela-mcdc-automacao.md
 ```

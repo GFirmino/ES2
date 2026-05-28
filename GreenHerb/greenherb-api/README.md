@@ -278,3 +278,39 @@ Relatorio auxiliar do Sprint 4:
 ```text
 docs/relatorio-sprint4.md
 ```
+
+## Sprint 5 - Testes White-box da criacao de planos
+
+O Sprint 5 acrescenta testes White-box a funcionalidade interna de criacao e validacao de planos de cultivo.
+
+Os testes incidem diretamente sobre:
+
+```text
+src/services/plans.service.js
+createPlan(planInput, options)
+```
+
+Este sprint documenta e cobre:
+
+- estruturas `if` existentes na validacao de tipo, `herbId`, parametros numericos e autorizacao de plano PONTUAL;
+- inexistencia de estruturas `for`, `forEach`, `for...of` e `while` na implementacao atual de planos;
+- decisoes internas e condicoes atomicas;
+- cobertura de decisoes e caminhos relevantes;
+- MC/DC da regra composta de criacao de plano PONTUAL;
+- matriz de rastreabilidade especifica do Sprint 5.
+
+Para correr os testes:
+
+```bash
+npm test
+```
+
+Documentos do Sprint 5:
+
+```text
+docs/whitebox-planos-analise.md
+docs/estruturas-whitebox-planos.md
+docs/tabela-mcdc-planos-sprint5.md
+docs/matriz-rastreabilidade-sprint5.md
+docs/relatorio-sprint5.md
+```

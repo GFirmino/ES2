@@ -1,0 +1,17 @@
+# Estruturas White-box - Planos
+
+| ID da Estrutura | Ficheiro | Funcao | Tipo de Estrutura | Decisao / Condicao | Condicoes Atomicas | Caminho Verdadeiro Coberto Por | Caminho Falso Coberto Por | Observacoes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| IF-PLAN-01 | `src/services/plans.service.js` | `normalizePlanType` | if | `type === undefined || type === null || type === ""` | type undefined; type null; type vazio | WB-PLAN-01 | WB-PLAN-02, WB-PLAN-03 | Valida obrigatoriedade do tipo |
+| IF-PLAN-02 | `src/services/plans.service.js` | `normalizePlanType` | if | `typeof type !== "string"` | type nao string | Sprint 2 cobre tipo nao string; sem novo caso dedicado no Sprint 5 | WB-PLAN-02, WB-PLAN-03, WB-PLAN-15 | Garante que `trim().toUpperCase()` e seguro |
+| IF-PLAN-03 | `src/services/plans.service.js` | `normalizePlanType` | if | `!VALID_PLAN_TYPES.includes(normalizedType)` | type fora da enumeracao | WB-PLAN-02 | WB-PLAN-03, WB-PLAN-11, WB-PLAN-14, WB-PLAN-15 | Valida REGULAR, EMERGENCIA e PONTUAL |
+| IF-PLAN-04 | `src/services/plans.service.js` | `validateHerbId` | if | `herbId === undefined || herbId === null || herbId === ""` | herbId undefined; herbId null; herbId vazio | WB-PLAN-04 | WB-PLAN-03, WB-PLAN-16 | Valida associacao logica a erva |
+| IF-PLAN-05 | `src/services/plans.service.js` | `validateHerbId` | if | `typeof herbId !== "number" || !Number.isFinite(herbId)` | herbId nao number; herbId nao finito | Sprint 2 cobre herbId invalido indiretamente; sem novo caso dedicado no Sprint 5 | WB-PLAN-03, WB-PLAN-16 | Valida tipo numerico de herbId |
+| IF-PLAN-06 | `src/services/plans.service.js` | `validateRequiredNumber` | if | `value === undefined || value === null || value === ""` | valor undefined; valor null; valor vazio | WB-PLAN-05 | WB-PLAN-03, WB-PLAN-16 | Aplica-se a temperature, humidity, luminosity e cycleDurationDays |
+| IF-PLAN-07 | `src/services/plans.service.js` | `validateRequiredNumber` | if | `typeof value !== "number" || !Number.isFinite(value)` | valor nao number; valor nao finito | WB-PLAN-06 | WB-PLAN-03, WB-PLAN-16 | Valida tipo dos parametros ambientais |
+| IF-PLAN-08 | `src/services/plans.service.js` | `validateRequiredNumber` | if | `value < limits.min || value > limits.max` | abaixo do minimo; acima do maximo | WB-PLAN-07, WB-PLAN-08 | WB-PLAN-09, WB-PLAN-10, WB-PLAN-16 | Cobre valores limite |
+| IF-PLAN-09 | `src/services/plans.service.js` | `validatePontualAuthorization` | if | `type !== "PONTUAL"` | tipo diferente de PONTUAL | WB-PLAN-03, WB-PLAN-11 | WB-PLAN-12, WB-PLAN-13, WB-PLAN-14 | REGULAR e EMERGENCIA nao exigem autorizacao especial |
+| IF-PLAN-10 | `src/services/plans.service.js` | `validatePontualAuthorization` | if | `options.hasResponsibleAuthorization !== true` | autorizacao explicita ausente | WB-PLAN-12, WB-PLAN-18 | WB-PLAN-13, WB-PLAN-14 | Primeira barreira da regra PONTUAL |
+| IF-PLAN-11 | `src/services/plans.service.js` | `validatePontualAuthorization` | if | `options.authorizedByRole !== "RESPONSAVEL"` | perfil autorizador diferente de RESPONSAVEL | WB-PLAN-13 | WB-PLAN-14 | Segunda barreira da regra PONTUAL |
+| FOR-PLAN-01 | `N/A` | `N/A` | for / forEach / for...of | Nao existe ciclo na implementacao atual | N/A | N/A | N/A | WB-PLAN-16 cobre todos os campos numericos por chamadas sequenciais, nao por ciclo |
+| WHILE-PLAN-01 | `N/A` | `N/A` | while | Nao existe while na implementacao atual | N/A | N/A | N/A | Nao foi criada estrutura artificial |

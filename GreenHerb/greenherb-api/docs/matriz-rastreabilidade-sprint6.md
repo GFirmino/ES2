@@ -1,0 +1,41 @@
+# Matriz de rastreabilidade - Sprint 6
+
+| ID do Caso de Teste | Requisito / Regra de Negocio | Funcionalidade | Componente / Classe Testada | Gateway Substituido | Duplo Utilizado | Tipo de Duplo | Input Controlado | Interacao Verificada | Resultado Esperado | Nivel de Teste | Tecnica Aplicada | Pre-condicoes | Referencia ao Diagrama de Classes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| TD-TEMP-01 | RN-TEMP-01 | Gateway de temperatura substituivel | `TemperatureGatewayStub` | TemperatureGateway | TemperatureGatewayStub | Stub | sensor-1, temperatura 23 | Chamada a `getCurrentTemperature` | Devolve temperatura 23 e `sensorOK=true` | Unidade | Test doubles, Stub | Stub configurado | `docs/diagrama-classes-sprint6.md` |
+| TD-TEMP-02 | RN-TEMP-01 | Leituras automaticas sequenciais | `TemperatureGatewayStub` | TemperatureGateway | TemperatureGatewayStub | Stub | temperaturas 23 e 29 | Duas chamadas sequenciais | Primeira chamada devolve 23, segunda devolve 29 | Unidade | Stub, particionamento de equivalencia | Stub com duas leituras | `docs/diagrama-classes-sprint6.md` |
+| TD-TEMP-03 | RN-TEMP-03 | Sensor invalido | `TemperatureGatewayStub` | TemperatureGateway | TemperatureGatewayStub | Stub | `sensorOK=false` | Leitura devolvida pelo stub | Devolve leitura com sensor invalido | Unidade | Stub, particionamento de equivalencia | Stub configurado | `docs/diagrama-classes-sprint6.md` |
+| TD-TEMP-04 | RN-TEMP-04 | Ausencia de leitura | `TemperatureGatewayStub` | TemperatureGateway | TemperatureGatewayStub | Stub | Sem leituras | Tratamento de erro | Erro controlado 404 | Unidade | Stub, particionamento de equivalencia | Stub vazio | `docs/diagrama-classes-sprint6.md` |
+| TD-TEMP-05 | RN-TEMP-01 | Isolamento face a gateway externo | `TemperatureGatewayStub` | TemperatureGateway | TemperatureGatewayStub | Stub | sensor-1, temperatura 23 | Contagem de chamadas no stub | Nenhuma chamada externa real; chamada registada no stub | Unidade | Test doubles, Stub | Stub instanciado | `docs/diagrama-classes-sprint6.md` |
+| TD-NOTIF-01 | RN-NOTIF-02 | Registo de notificacao | `NotificationGatewayMock` | NotificationGateway | NotificationGatewayMock | Mock | Notificacao TEMPERATURE_ALERT | `sendNotification` chamada uma vez | `getCallCount()=1` e ultima notificacao contem type, message e payload | Unidade | Mock, verificacao de interacoes | Mock vazio | `docs/diagrama-classes-sprint6.md` |
+| TD-NOTIF-02 | RN-NOTIF-02 | Multiplas notificacoes | `NotificationGatewayMock` | NotificationGateway | NotificationGatewayMock | Mock | Duas notificacoes | Duas chamadas a `sendNotification` | Lista contem ambas as notificacoes | Unidade | Mock, verificacao de interacoes | Mock vazio | `docs/diagrama-classes-sprint6.md` |
+| TD-NOTIF-03 | RN-NOTIF-02 | Limpeza de chamadas | `NotificationGatewayMock` | NotificationGateway | NotificationGatewayMock | Mock | Uma notificacao seguida de `clear()` | Reset interno do mock | `getCallCount()=0` | Unidade | Mock, verificacao de interacoes | Mock com uma chamada | `docs/diagrama-classes-sprint6.md` |
+| TD-NOTIF-04 | RN-NOTIF-03 | Destinatario da notificacao | `NotificationGatewayMock` | NotificationGateway | NotificationGatewayMock | Mock | `recipientRole=RESPONSAVEL` | Ultima notificacao registada | Destinatario corresponde a RESPONSAVEL | Unidade | Mock, verificacao de interacoes | Mock vazio | `docs/diagrama-classes-sprint6.md` |
+| TD-AUTOTEMP-01 | RN-TEMP-02 | Medicao dentro dos limites | `collectAutomaticTemperatureMeasurement` | TemperatureGateway, NotificationGateway | Stub + Mock | Stub e Mock | Temperatura 23 | Mock nao deve ser chamado | Medicao criada, sem alerta, sem notificacao | Unidade | Injecao de dependencias, particionamento | Plano 18-28 | `docs/diagrama-classes-sprint6.md` |
+| TD-AUTOTEMP-02 | RN-NOTIF-01, RN-NOTIF-03 | Temperatura acima do limite | `collectAutomaticTemperatureMeasurement` | TemperatureGateway, NotificationGateway | Stub + Mock | Stub e Mock | Temperatura 29 | `sendNotification` chamada uma vez | Alerta criado, notificacao enviada com payload coerente | Unidade | Stub, Mock, valor limite 29 | Plano 18-28 | `docs/diagrama-classes-sprint6.md` |
+| TD-AUTOTEMP-03 | RN-NOTIF-01 | Temperatura abaixo do limite | `collectAutomaticTemperatureMeasurement` | TemperatureGateway, NotificationGateway | Stub + Mock | Stub e Mock | Temperatura 17 | `sendNotification` chamada uma vez | Alerta criado e notificacao enviada | Unidade | Stub, Mock, valor limite 17 | Plano 18-28 | `docs/diagrama-classes-sprint6.md` |
+| TD-AUTOTEMP-04 | RN-TEMP-03 | Sensor invalido | `collectAutomaticTemperatureMeasurement` | TemperatureGateway, NotificationGateway | Stub + Mock | Stub e Mock | Temperatura 29, `sensorOK=false` | Mock nao deve ser chamado | Medicao invalida/controlada, sem alerta operacional | Unidade | Stub, Mock, particionamento | Plano 18-28 | `docs/diagrama-classes-sprint6.md` |
+| TD-AUTOTEMP-05 | RN-TEMP-04 | Ausencia de leitura | `collectAutomaticTemperatureMeasurement` | TemperatureGateway, NotificationGateway | Stub + Mock | Stub e Mock | Sem leitura | Erro antes de notificar | Erro controlado 404 e zero notificacoes | Unidade | Stub, Mock, particionamento | Stub vazio | `docs/diagrama-classes-sprint6.md` |
+| TD-AUTOTEMP-06 | RN-TEMP-02 | Limite inferior valido | `collectAutomaticTemperatureMeasurement` | TemperatureGateway, NotificationGateway | Stub + Mock | Stub e Mock | Temperatura 18 | Mock nao deve ser chamado | Sem alerta e sem notificacao | Unidade | Valor limite 18, Stub, Mock | Plano 18-28 | `docs/diagrama-classes-sprint6.md` |
+| TD-AUTOTEMP-07 | RN-TEMP-02 | Limite superior valido | `collectAutomaticTemperatureMeasurement` | TemperatureGateway, NotificationGateway | Stub + Mock | Stub e Mock | Temperatura 28 | Mock nao deve ser chamado | Sem alerta e sem notificacao | Unidade | Valor limite 28, Stub, Mock | Plano 18-28 | `docs/diagrama-classes-sprint6.md` |
+| TD-AUTOTEMP-08 | RN-TEMP-01 | Gateway de temperatura obrigatorio | `collectAutomaticTemperatureMeasurement` | TemperatureGateway | Sem gateway | N/A | Dependencia ausente | Validacao de dependencias | Erro controlado 400 e zero notificacoes | Unidade | Injecao de dependencias | Input valido sem gateway | `docs/diagrama-classes-sprint6.md` |
+| TD-AUTOTEMP-09 | RN-NOTIF-01 | Notificacao apenas quando ha alerta | `collectAutomaticTemperatureMeasurement` | TemperatureGateway, NotificationGateway | Stub + Mock | Stub e Mock | Leituras 23 e 29 | Contagem acumulada do mock | Primeira execucao sem notificacao; segunda com uma notificacao | Unidade | Stub sequencial, Mock, valores limite | Plano 18-28 | `docs/diagrama-classes-sprint6.md` |
+| TD-FLOW-01 | RN-NOTIF-01, RN-NOTIF-03 | Fluxo temperatura-alerta-notificacao | Service + AlertsService + Mock | TemperatureGateway, NotificationGateway | Stub + Mock | Stub e Mock | Temperatura 29 | Classificacao de alerta e envio de notificacao | Alerta classificado e payload coerente | Integracao de Componentes sem HTTP | Test doubles, verificacao de interacoes | Plano 18-28 | `docs/diagrama-classes-sprint6.md` |
+| TD-FLOW-02 | RN-TEMP-02 | Fluxo sem alerta | Service + AlertsService + Mock | TemperatureGateway, NotificationGateway | Stub + Mock | Stub e Mock | Temperatura 23 | Mock nao deve ser chamado | Sem alerta e sem notificacao | Integracao de Componentes sem HTTP | Test doubles, particionamento | Plano 18-28 | `docs/diagrama-classes-sprint6.md` |
+
+## Diagrama de Classes Global
+
+O diagrama de classes global do Sprint 6 esta documentado em:
+
+- `docs/diagrama-classes-sprint6.md`
+- `docs/diagrama-classes-sprint6.mmd`
+
+Classes principais:
+
+- `AutomaticTemperatureMeasurementService`: coordena a leitura automatica, validacao, classificacao e notificacao.
+- `TemperatureGateway`: gateway substituivel para obter a temperatura.
+- `NotificationGateway`: gateway substituivel para envio de notificacoes.
+- `AlertsService`: classifica medicoes fora dos limites.
+- `MeasurementsService`: valida a medicao criada.
+- `TemperatureGatewayStub`: substitui `TemperatureGateway` nos testes, devolvendo leituras controladas.
+- `NotificationGatewayMock`: substitui `NotificationGateway` nos testes, registando chamadas sem envio real.

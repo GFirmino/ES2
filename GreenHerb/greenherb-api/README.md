@@ -314,3 +314,38 @@ docs/tabela-mcdc-planos-sprint5.md
 docs/matriz-rastreabilidade-sprint5.md
 docs/relatorio-sprint5.md
 ```
+
+## Sprint 6 - Duplos de teste para gateways externos
+
+O Sprint 6 introduz duplos de teste para dependencias externas da aplicacao.
+
+Foram adicionados:
+
+- `TemperatureGatewayStub`, usado para substituir o gateway de leitura automatica de temperatura;
+- `NotificationGatewayMock`, usado para substituir o gateway de envio de notificacoes;
+- `collectAutomaticTemperatureMeasurement`, service que recebe gateways por injecao de dependencias e testa o fluxo sem chamar sistemas externos reais.
+
+Os testes verificam:
+
+- leituras automaticas de temperatura dentro e fora dos limites;
+- sensor invalido;
+- ausencia de leitura;
+- geracao de alerta quando a temperatura esta fora dos limites;
+- envio e nao envio de notificacoes;
+- payload da notificacao enviada;
+- colaboracao entre medicao automatica, classificacao de alertas e notificacoes sem HTTP.
+
+Para correr todos os testes:
+
+```bash
+npm test
+```
+
+Documentos do Sprint 6:
+
+```text
+docs/diagrama-classes-sprint6.md
+docs/diagrama-classes-sprint6.mmd
+docs/matriz-rastreabilidade-sprint6.md
+docs/relatorio-sprint6.md
+```

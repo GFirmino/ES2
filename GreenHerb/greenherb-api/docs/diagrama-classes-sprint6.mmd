@@ -1,0 +1,63 @@
+classDiagram
+class AutomaticTemperatureMeasurementService {
+  +collectAutomaticTemperatureMeasurement(input, dependencies)
+}
+
+class TemperatureGateway {
+  +getCurrentTemperature(sensorId)
+}
+
+class InMemoryTemperatureGateway {
+  -defaultTemperature
+  +getCurrentTemperature(sensorId)
+}
+
+class TemperatureGatewayStub {
+  -readings
+  -calls
+  +getCurrentTemperature(sensorId)
+  +getCallCount()
+  +getCalls()
+}
+
+class NotificationGateway {
+  +sendNotification(notification)
+}
+
+class InMemoryNotificationGateway {
+  -notifications
+  +sendNotification(notification)
+  +getNotifications()
+}
+
+class NotificationGatewayMock {
+  -notifications
+  +sendNotification(notification)
+  +getCallCount()
+  +getLastNotification()
+  +getNotifications()
+  +clear()
+}
+
+class AlertsService {
+  +classifyAlert(measurement, plan)
+}
+
+class MeasurementsService {
+  +validateMeasurement(measurement)
+}
+
+class AuditService {
+  +createAuditEntry(input)
+  +shouldAuditOperation(method)
+}
+
+AutomaticTemperatureMeasurementService --> TemperatureGateway : dependency injection
+AutomaticTemperatureMeasurementService --> NotificationGateway : dependency injection
+AutomaticTemperatureMeasurementService --> AlertsService : classifica alerta
+AutomaticTemperatureMeasurementService --> MeasurementsService : valida medicao
+AutomaticTemperatureMeasurementService ..> AuditService : opcional
+InMemoryTemperatureGateway ..|> TemperatureGateway
+TemperatureGatewayStub ..|> TemperatureGateway
+InMemoryNotificationGateway ..|> NotificationGateway
+NotificationGatewayMock ..|> NotificationGateway
